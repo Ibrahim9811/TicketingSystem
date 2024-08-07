@@ -9,8 +9,7 @@ namespace TicketingSystem.Data.Models
         public string LastName { get; set; }
         public DateOnly Birthday { get; set; }
         public string Address { get; set; }
-        public UserImage UserImage { get; set; }
-        public Guid ImgId { get; set; }
+        public string Path { get; set; }
         public UserStatus Status { get; set; }
     }
 

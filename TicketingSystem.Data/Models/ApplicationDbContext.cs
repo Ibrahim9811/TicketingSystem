@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 
 namespace TicketingSystem.Data.Models
 {
@@ -13,22 +14,16 @@ namespace TicketingSystem.Data.Models
         }
         public ApplicationDbContext()
         {
-            
+
         }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<UserImage> UserImages { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().
-                HasOne(x => x.UserImage).WithOne(c => c.User).HasForeignKey<UserImage>(c => c.UserId);
-
-            modelBuilder.Entity<UserImage>().
-                HasOne(x => x.User).WithOne(c => c.UserImage).HasForeignKey<User>(c => c.ImgId);
 
             modelBuilder.Entity<Ticket>().
                 HasOne(x => x.Product).WithMany(c => c.Tickets).HasForeignKey(c => c.ProductId);
@@ -67,24 +62,29 @@ namespace TicketingSystem.Data.Models
             Guid AdminRoleGuid = Guid.NewGuid();
 
             modelBuilder.Entity<Role>().HasData(new Role { Id = AdminRoleGuid, Name = "Support Manager", NormalizedName = "Support Manager" });
-            modelBuilder.Entity<Role>().HasData(new Role { Id = Guid.NewGuid(), Name = "Support Team Member", NormalizedName = "Support Team Member"});
+            modelBuilder.Entity<Role>().HasData(new Role { Id = Guid.NewGuid(), Name = "Support Team Member", NormalizedName = "Support Team Member" });
             modelBuilder.Entity<Role>().HasData(new Role { Id = Guid.NewGuid(), Name = "Client", NormalizedName = "Client" });
 
             Guid AdminGuid = Guid.NewGuid();
-            Guid ImageId = Guid.NewGuid();
 
-            modelBuilder.Entity<UserImage>().HasData(new UserImage { ImgId = ImageId, Path = "Test", UserId = AdminGuid });
+            modelBuilder.Entity<User>().HasData(new User { Id = AdminGuid, FirstName = "Admin", LastName = "Admin", Birthday = DateOnly.FromDateTime(DateTime.Now), Address = "T2", Path = "Test", Status = UserStatus.Active, UserName = "admin", NormalizedUserName = "admin", Email = "admin@Admin.com", NormalizedEmail = "admin@Admin.com", EmailConfirmed = true, PasswordHash = new PasswordHasher().HashPassword("P@ssword123"), SecurityStamp = Guid.NewGuid().ToString(), ConcurrencyStamp = Guid.NewGuid().ToString(), PhoneNumber = "000000000", PhoneNumberConfirmed = true, TwoFactorEnabled = true, LockoutEnabled = false, AccessFailedCount = 0 });
 
-            modelBuilder.Entity<User>().HasData(new User { Id = AdminGuid, FirstName = "Admin", LastName = "Admin", Birthday = DateOnly.FromDateTime(DateTime.Now), Address = "T2", ImgId = ImageId, Status = UserStatus.Active, UserName = "admin", NormalizedUserName = "admin", Email = "admin@Admin.com", NormalizedEmail = "admin@Admin.com", EmailConfirmed = true, PasswordHash = new PasswordHasher().HashPassword("P@ssword123"), SecurityStamp = Guid.NewGuid().ToString(), ConcurrencyStamp = Guid.NewGuid().ToString(), PhoneNumber = "000000000", PhoneNumberConfirmed = true, TwoFactorEnabled = true, LockoutEnabled = false, AccessFailedCount = 0 });
-            
-            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid> { RoleId = AdminRoleGuid , UserId = AdminGuid });
-
-
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid> { RoleId = AdminRoleGuid, UserId = AdminGuid });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Configurartion
+
+            //if (!optionsBuilder.IsConfigured)
+            //{
+
+            //    var configuration = new ConfigurationBuilder()
+            //        .SetBasePath(Directory.GetCurrentDirectory())
+            //        .AddJsonFile("appsettings.json")
+            //        .Build();
+
+            //    optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            //}
 
 
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-K5EL0GL;Database=TicketingSystem;Trusted_Connection=True;Encrypt=False;");
