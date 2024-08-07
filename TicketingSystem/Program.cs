@@ -8,6 +8,7 @@ using System.Text;
 using TicketingSystem.Data.IServices;
 using TicketingSystem.Data.Models;
 using TicketingSystem.Services.Helper;
+using TicketingSystem.Services.IServices;
 using TicketingSystem.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddScoped<IAuth, Auth>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 

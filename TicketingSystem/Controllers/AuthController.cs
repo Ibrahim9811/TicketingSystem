@@ -31,5 +31,6 @@ namespace TicketingSystem.Controllers
 
             return Ok(result);
         }
+
     }
 }
