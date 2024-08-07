@@ -18,10 +18,7 @@ namespace TicketingSystem.Controllers
         }
 
 
-        // "email": "admin@hotmail.com",
-        // "password": "P@ssword123"
-
-        [HttpPost("token")]
+        [HttpPost("Login")]
         public async Task<IActionResult> GetTokenAsync([FromBody] LoginDTO model)
         {
             if (!ModelState.IsValid)
